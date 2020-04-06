@@ -62,8 +62,12 @@
 
 (defrule finalizar
 	(declare (salience 500))
-	(entrega ?p1 ?m1)
-	(recoger ?p2 ?m2)
+	(entrega $? ?p1 ?m1 $?)
+	(recoger $? ?p2 ?m2 $?)
+	(test (= ?p1 0))
+	(test (= ?m1 0))
+	(test (= ?p2 0))
+	(test (= ?m2 0))
 	=>
 	(halt)
 )
