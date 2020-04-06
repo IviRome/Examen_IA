@@ -1,6 +1,6 @@
 (deffacts hechos
 	(robot platos 0 llevandoACocina 0)
-	(mesas 0 0 0 0)
+	(mesas 2 0 1 0)
 	(entrega 3 3 0 0 2 2)
 	(recoger 4 3 0 0 2 1)
 )
@@ -12,9 +12,10 @@
 	(test (<= (+ ?x ?platos) 4))
 	(test (<> ?platos 0))
 	=>
+	(printout t "cargarPlatos" crlf)
 	(retract ?f)
 	(retract ?f1)
-	(assert (robot platos (+ ?x ?platos) 0))
+	(assert (robot platos (+ ?x ?platos) llevandoACocina 0))
 	(assert (entrega $?r1 0 ?mesa $?r2))
 )
 
@@ -26,10 +27,11 @@
 	(test (<= (+ ?x ?platos) 4))
 	(test (= (length $?resto1) (- ?mesa 1)))
 	=>
+	(printout t "recogerPlatos" crlf)
 	(retract ?f)
 	(retract ?f1)
 	(retract ?f2)
-	(assert (robot platos (+ ?x ?platos) 1))
+	(assert (robot platos (+ ?x ?platos) llevandoACocina 1))
 	(assert (recoger $?r1 $?r2))
 	(assert (mesa $?resto1 (- ?m ?platos) $?resto2))
 )
@@ -40,6 +42,7 @@
 	(recoger $?r1 ?p ?m $?r1)
 	(test (or (= ?x 4) (= ?p 0)))
 	=>
+	(printout t "llevarPlatosACocina" crlf)
 	(retract ?f)
 	(assert (robot platos 0 llevandoACocina 0))
 )
@@ -52,6 +55,7 @@
 	(test (= (length $?resto1) (- ?mesa 1)))
 	(test (or (= ?x 4) (= $?p 0)))
 	=>
+	(printout t "llevarPlatosAMesa" crlf)
 	(retract ?f)
 	(retract ?f1)
 	(retract ?f2)
@@ -62,13 +66,14 @@
 
 (defrule finalizar
 	(declare (salience 500))
-	(entrega $? ?p1 ?m1 $?)
-	(recoger $? ?p2 ?m2 $?)
+	(entrega ?p1 ?m1)
+	(recoger ?p2 ?m2)
 	(test (= ?p1 0))
 	(test (= ?m1 0))
 	(test (= ?p2 0))
 	(test (= ?m2 0))
 	=>
+	(printout t "finalizar" crlf)
 	(halt)
 )
 
